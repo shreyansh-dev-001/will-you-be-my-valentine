@@ -3,18 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hi there</title>
-    <style>
-        body { font-family: 'Courier New', sans-serif; text-align: center; padding-top: 50px; background-color: #ffe6eb; color: #d63384; }
-        button { padding: 10px 20px; font-size: 18px; cursor: pointer; background: white; border: 2px solid #d63384; border-radius: 5px; color: #d63384; }
-        button:hover { background: #d63384; color: white; }
-    </style>
+    <title>For You</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hi [Girlfriend's Name]</h1>
-    
-    <br>
-    
-    <a href="together.html"><button>Hi [My Name]</button></a>
+    <div class="bg-hearts" id="hearts-container"></div>
+
+    <div class="card">
+        <h1>Hi [Girlfriend's Name]</h1>
+        <p>I wanted to ask you something...</p>
+        <a href="together.html"><button>Hi [My Name]</button></a>
+    </div>
+
+    <script>
+        // Simple JS to create floating hearts
+        const container = document.getElementById('hearts-container');
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            container.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+        setInterval(createHeart, 300);
+    </script>
 </body>
 </html>

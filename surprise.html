@@ -4,75 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Surprise</title>
+    <link rel="stylesheet" href="style.css">
     <style>
-        body { font-family: 'Courier New', sans-serif; text-align: center; padding: 20px; background-color: #ffe6eb; color: #d63384; }
-        
+        /* Specific styles for scratch card alignment */
         #scratch-container {
-            position: relative;
             width: 300px;
             height: 150px;
             margin: 20px auto;
-            border: 2px solid #d63384;
+            position: relative;
             border-radius: 10px;
             overflow: hidden;
-            user-select: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-
+        canvas { position: absolute; top: 0; left: 0; }
         #secret-message {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: white; 
-            font-weight: bold;
-            font-size: 22px;
-            color: #d63384;
-            position: absolute;
-            top: 0; left: 0;
-            z-index: 0;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            background: #fff0f5; color: #d45d79; font-family: 'Playfair Display'; font-weight: bold; font-size: 24px;
         }
-
-        canvas {
-            position: absolute;
-            top: 0; left: 0;
-            z-index: 1;
-            cursor: pointer;
-        }
-
-        #options { display: none; margin-top: 20px; }
-        
-        button { padding: 10px 30px; font-size: 18px; margin: 10px; cursor: pointer; border-radius: 5px; border: 2px solid #d63384; }
-        .yes-btn { background-color: #d63384; color: white; }
-        .no-btn { background-color: #ccc; color: #666; border-color: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
-    <h1>I have a surprise for you...</h1>
-    <p>Scratch the card below!</p>
+    <div class="bg-hearts" id="hearts-container"></div>
 
-    <div id="scratch-container">
-        <div id="secret-message">Will you be my Valentine?</div>
-        <canvas id="scratch-canvas" width="300" height="150"></canvas>
-    </div>
+    <div class="card">
+        <h1>I have a surprise...</h1>
+        <p>Scratch the card to reveal it!</p>
 
-    <div id="options">
-        <a href="yes.html"><button class="yes-btn">Yes</button></a>
-        <button class="no-btn" disabled>No</button>
+        <div id="scratch-container">
+            <div id="secret-message">Be my Valentine?</div>
+            <canvas id="scratch-canvas" width="300" height="150"></canvas>
+        </div>
+
+        <div id="options" style="display: none; margin-top: 20px;">
+            <a href="yes.html"><button>Yes</button></a>
+            <button disabled style="background-color: #eee; color: #999; box-shadow: none;">No</button>
+        </div>
     </div>
 
     <script>
+        // Hearts
+        const container = document.getElementById('hearts-container');
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            container.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }, 300);
+
+        // Scratch Card Logic
         const canvas = document.getElementById('scratch-canvas');
         const ctx = canvas.getContext('2d');
         
-        // 1. Fill with Gray
         ctx.fillStyle = '#C0C0C0'; 
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // 2. Add Text to Scratch Layer
-        ctx.fillStyle = '#000';
-        ctx.font = '20px Arial';
-        ctx.fillText("Scratch Here!", 85, 80);
+        ctx.fillStyle = '#555';
+        ctx.font = '20px Lato';
+        ctx.fillText("Scratch Here", 95, 80);
 
         let isDrawing = false;
 
@@ -84,7 +76,6 @@
             checkProgress();
         }
 
-        // Mouse & Touch Listeners
         canvas.addEventListener('mousedown', () => isDrawing = true);
         canvas.addEventListener('mouseup', () => isDrawing = false);
         canvas.addEventListener('mousemove', (e) => {
@@ -93,7 +84,6 @@
             scratch(e.clientX - rect.left, e.clientY - rect.top);
         });
 
-        // Mobile touch support
         canvas.addEventListener('touchstart', (e) => { isDrawing = true; e.preventDefault(); });
         canvas.addEventListener('touchend', () => isDrawing = false);
         canvas.addEventListener('touchmove', (e) => {
@@ -110,7 +100,6 @@
             for (let i = 3; i < pixels.length; i += 4) {
                 if (pixels[i] === 0) transparent++;
             }
-            // If > 40% cleared, show buttons
             if ((transparent / (pixels.length / 4)) > 0.4) {
                 document.getElementById('options').style.display = 'block';
             }

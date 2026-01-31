@@ -4,37 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Us</title>
-    <style>
-        body { font-family: 'Courier New', sans-serif; text-align: center; padding: 20px; background-color: #ffe6eb; color: #d63384; }
-        #time-container { font-size: 1.2em; margin: 30px auto; line-height: 1.6; }
-        button { padding: 10px 20px; font-size: 18px; cursor: pointer; background: white; border: 2px solid #d63384; border-radius: 5px; color: #d63384; }
-        button:hover { background: #d63384; color: white; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Do you know how long we've been together?</h1>
-    
-    <div id="time-container">
+    <div class="bg-hearts" id="hearts-container"></div>
+
+    <div class="card">
+        <h1>Us.</h1>
+        
+        <div class="polaroid">
+            <img src="us.jpg" alt="Us" onerror="this.src='https://placehold.co/300x300/pink/white?text=Our+Photo';">
         </div>
 
-    <a href="surprise.html"><button>Wow!</button></a>
+        <p>Do you know how long we've been together?</p>
+        
+        <div id="timer" style="font-family: 'Playfair Display'; font-size: 1.2rem; margin: 20px 0; color: #d45d79;">
+            </div>
+
+        <a href="surprise.html"><button>Wow!</button></a>
+    </div>
 
     <script>
-        const startDate = new Date("2023-09-27"); // YOUR START DATE
+        // Background Animation
+        const container = document.getElementById('hearts-container');
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+            container.appendChild(heart);
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+        setInterval(createHeart, 300);
+
+        // Timer Logic
+        const startDate = new Date("2023-09-27");
         const now = new Date();
         const diffTime = Math.abs(now - startDate);
-        
         const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
         const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
-        const diffMinutes = Math.floor(diffTime / (1000 * 60));
-        
-        // Average heart rate ~80 bpm
-        const heartbeats = diffMinutes * 80;
+        const heartbeats = Math.floor((diffTime / (1000 * 60)) * 80);
 
-        document.getElementById('time-container').innerHTML = `
-            That's <strong>${diffDays} days</strong>.<br>
-            Or <strong>${diffHours.toLocaleString()} hours</strong>.<br>
-            Or <strong>${heartbeats.toLocaleString()} heartbeats</strong>.
+        document.getElementById('timer').innerHTML = `
+            ${diffDays} Days<br>
+            <span style="font-size: 0.8em; color: #888;">(${diffHours.toLocaleString()} Hours)</span><br>
+            <span style="font-size: 0.8em; color: #888;">~${heartbeats.toLocaleString()} Heartbeats</span>
         `;
     </script>
 </body>
