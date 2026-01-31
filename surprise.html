@@ -108,24 +108,12 @@
 
             // Initialize
             sc.init().then(() => {
-                const ctx = sc.canvas.getContext('2d');
-                
-                // Draw "Scratch Here" text
-                // We fill the whole canvas with silver first just in case
-                ctx.fillStyle = '#C0C0C0';
-                ctx.fillRect(0,0,300,150);
-                
-                ctx.font = 'bold 24px "Playfair Display", serif';
-                ctx.fillStyle = '#555';
-                ctx.fillText("Scratch Here!", 80, 85);
-
-                // Add Event Listener for progress
                 sc.canvas.addEventListener('scratch.move', () => {
-                    let percent = sc.getPercent();
-                    if (percent > 40) {
-                        document.getElementById('options').style.display = 'block';
-                    }
-                });
+                let percent = sc.getPercent();
+                if (percent > 40) {
+                    document.getElementById('options').style.display = 'block';
+                }
+            });
             }).catch((error) => {
                 console.error("Scratch Card Error:", error);
                 // Fail-safe: show the content if something breaks
