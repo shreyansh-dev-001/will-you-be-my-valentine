@@ -86,47 +86,51 @@
 
         // --- 2. Realistic Scratch Card Setup ---
         
-        const sc = new ScratchCard('#js--sc--container', {
-            scratchType: ScratchCard.SCRATCH_TYPE.SPRAY, // <--- FIXED HERE
-            containerWidth: 300,
-            containerHeight: 150,
-            imageForwardSrc: 'https://placehold.co/300x150/C0C0C0/C0C0C0.png', // <--- Reliable Silver Image
-            clearZoneRadius: 30,
-            nPoints: 30,
-            pointSize: 4,
-            callback: function () {
-                // This runs continuously while scratching
-            }
-        });
-
-        // Initialize the scratch card
-        sc.init().then(() => {
+        // This function ensures the library is loaded before we run the code
+        window.addEventListener('load', function() {
             
-            // Add "Scratch Me" text on top of the canvas
-            const canvas = sc.canvas;
-            const ctx = canvas.getContext('2d');
-            
-            // We need to wait a split second for the image to load before writing text
-            setTimeout(() => {
-                ctx.font = 'bold 24px Playfair Display, serif';
-                ctx.fillStyle = '#555';
-                ctx.fillText("Scratch Here!", 80, 85);
-            }, 100);
+            // A simple Base64 Silver Image (1x1 pixel stretched)
+            // This bypasses the "Tracking Prevention" error because it's not an external download
+            const base64Silver = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
 
-            // Check progress manually to trigger the buttons
-            canvas.addEventListener('scratch.move', () => {
-                let percent = sc.getPercent();
-                // If 40% is scratched, show the buttons
-                if (percent > 40) {
-                    document.getElementById('options').style.display = 'block';
+            const sc = new ScratchCard('#js--sc--container', {
+                scratchType: SCRATCH_TYPE.SPRAY, // <--- FIXED: Removed 'ScratchCard.' prefix
+                containerWidth: 300,
+                containerHeight: 150,
+                imageForwardSrc: base64Silver, // <--- FIXED: Using embedded image
+                clearZoneRadius: 30,
+                nPoints: 30,
+                pointSize: 4,
+                callback: function () {
+                    // runs continuously
                 }
             });
-        }).catch((error) => {
-            console.error("Scratch Card Error:", error.message);
-            // Fallback: If it fails, just show the text and buttons
-            document.getElementById('js--sc--container').style.display = 'none';
-            document.querySelector('.secret-text').style.display = 'block';
-            document.getElementById('options').style.display = 'block';
+
+            // Initialize
+            sc.init().then(() => {
+                const ctx = sc.canvas.getContext('2d');
+                
+                // Draw "Scratch Here" text
+                // We fill the whole canvas with silver first just in case
+                ctx.fillStyle = '#C0C0C0';
+                ctx.fillRect(0,0,300,150);
+                
+                ctx.font = 'bold 24px "Playfair Display", serif';
+                ctx.fillStyle = '#555';
+                ctx.fillText("Scratch Here!", 80, 85);
+
+                // Add Event Listener for progress
+                sc.canvas.addEventListener('scratch.move', () => {
+                    let percent = sc.getPercent();
+                    if (percent > 40) {
+                        document.getElementById('options').style.display = 'block';
+                    }
+                });
+            }).catch((error) => {
+                console.error("Scratch Card Error:", error);
+                // Fail-safe: show the content if something breaks
+                document.getElementById('options').style.display = 'block';
+            });
         });
     </script>
 </body>
