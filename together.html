@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Us</title>
+    <style>
+        body { font-family: 'Courier New', sans-serif; text-align: center; padding: 20px; background-color: #ffe6eb; color: #d63384; }
+        #time-container { font-size: 1.2em; margin: 30px auto; line-height: 1.6; }
+        button { padding: 10px 20px; font-size: 18px; cursor: pointer; background: white; border: 2px solid #d63384; border-radius: 5px; color: #d63384; }
+        button:hover { background: #d63384; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Do you know how long we've been together?</h1>
+    
+    <div id="time-container">
+        </div>
+
+    <a href="surprise.html"><button>Wow!</button></a>
+
+    <script>
+        const startDate = new Date("2023-09-27"); // YOUR START DATE
+        const now = new Date();
+        const diffTime = Math.abs(now - startDate);
+        
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)); 
+        const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+        const diffMinutes = Math.floor(diffTime / (1000 * 60));
+        
+        // Average heart rate ~80 bpm
+        const heartbeats = diffMinutes * 80;
+
+        document.getElementById('time-container').innerHTML = `
+            That's <strong>${diffDays} days</strong>.<br>
+            Or <strong>${diffHours.toLocaleString()} hours</strong>.<br>
+            Or <strong>${heartbeats.toLocaleString()} heartbeats</strong>.
+        `;
+    </script>
+</body>
+</html>
