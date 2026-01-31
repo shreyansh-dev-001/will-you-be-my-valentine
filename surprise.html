@@ -16,10 +16,9 @@
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            border: 2px solid #d45d79; /* Matches the theme */
+            border: 2px solid #d45d79;
         }
         
-        /* The canvas sits on TOP */
         canvas {
             position: absolute;
             top: 0;
@@ -28,7 +27,6 @@
             cursor: crosshair;
         }
 
-        /* The message sits BEHIND */
         #secret-message {
             position: absolute;
             top: 0;
@@ -38,7 +36,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #fff0f5; /* Light pink */
+            background: #fff0f5;
             color: #d45d79;
             font-family: 'Playfair Display', serif;
             font-weight: bold;
@@ -66,7 +64,7 @@
 
         <div id="options">
             <a href="yes.html"><button>Yes</button></a>
-            <button disabled style="background-color: #eee; color: #999; box-shadow: none; cursor: not-allowed;">No</button>
+            <button id="no-btn" style="background-color: #efefef; color: #555; border: 1px solid #ccc;">No</button>
         </div>
     </div>
 
@@ -90,37 +88,29 @@
         let lastX = 0;
         let lastY = 0;
 
-        // A. Initialize the "Silver" Layer
         function initCard() {
-            ctx.fillStyle = '#C0C0C0'; // Silver Gray
+            ctx.fillStyle = '#C0C0C0'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Add Text to the Scratch Layer
             ctx.fillStyle = '#555';
             ctx.font = '20px Lato, sans-serif';
             ctx.fillText("Scratch Here!", 90, 80);
         }
         initCard();
 
-        // B. Scratch Function (Draws smooth lines)
         function scratch(x, y) {
             ctx.globalCompositeOperation = 'destination-out';
-            ctx.lineWidth = 40; // Size of the scratch
+            ctx.lineWidth = 40;
             ctx.lineCap = 'round';
             ctx.lineJoin = 'round';
-
             ctx.beginPath();
-            ctx.moveTo(lastX, lastY); // Start from where we were
-            ctx.lineTo(x, y);         // Draw to where we are now
-            ctx.stroke();             // Make the line happen
-            
-            lastX = x; // Update position
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            lastX = x;
             lastY = y;
-            
             checkProgress();
         }
 
-        // C. Mouse Events
         canvas.addEventListener('mousedown', (e) => {
             isDrawing = true;
             const rect = canvas.getBoundingClientRect();
@@ -137,10 +127,9 @@
         canvas.addEventListener('mouseup', () => isDrawing = false);
         canvas.addEventListener('mouseout', () => isDrawing = false);
 
-        // D. Touch Events (Mobile)
         canvas.addEventListener('touchstart', (e) => {
             isDrawing = true;
-            e.preventDefault(); // Stop scrolling while scratching
+            e.preventDefault();
             const rect = canvas.getBoundingClientRect();
             const touch = e.touches[0];
             lastX = touch.clientX - rect.left;
@@ -157,27 +146,24 @@
 
         canvas.addEventListener('touchend', () => isDrawing = false);
 
-        // E. Check if enough is scratched
         function checkProgress() {
-            // Get all pixels
             const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             const pixels = imageData.data;
             let transparentPixels = 0;
-
-            // Loop through pixels (every 4th value is Alpha/Transparency)
             for (let i = 3; i < pixels.length; i += 4) {
                 if (pixels[i] === 0) transparentPixels++;
             }
-
-            // Calculate percentage
-            const totalPixels = canvas.width * canvas.height;
-            const percent = (transparentPixels / totalPixels) * 100;
-
-            // If 40% is cleared, show the buttons
+            const percent = (transparentPixels / (canvas.width * canvas.height)) * 100;
             if (percent > 40) {
                 document.getElementById('options').style.display = 'block';
             }
         }
+
+        // --- 3. THE "NO" BUTTON TRAP ---
+        document.getElementById('no-btn').addEventListener('click', function() {
+            alert("Not allowed! 😋 (You have to say Yes!)");
+        });
+
     </script>
 </body>
 </html>
